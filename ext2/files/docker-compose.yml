@@ -42,5 +42,8 @@ services:
     restart: unless-stopped
     volumes:
       - type: bind
-        source: /opt/docker/prometheus_data
+        source: /opt/docker/prometheus_config
         target: /etc/prometheus
+      - type: bind
+        source: /opt/docker/prometheus_data
+        target: /prometheus
