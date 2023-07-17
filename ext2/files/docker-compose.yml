@@ -4,6 +4,7 @@ services:
 
   wordpress:
     image: wordpress
+    container_name: wordpress
     restart: always
     ports:
       - 8080:80
@@ -13,10 +14,13 @@ services:
       WORDPRESS_DB_PASSWORD: xZzK2jok
       WORDPRESS_DB_NAME: wordpressdb
     volumes:
-      - wordpress:/var/www/html
+      - type: bind
+        source: /opt/docker/wp_data
+        target: /var/www/html
 
   db:
     image: mysql:5.7
+    container_name: mysql
     restart: always
     environment:
       MYSQL_DATABASE: wordpressdb
@@ -24,7 +28,9 @@ services:
       MYSQL_PASSWORD: xZzK2jok
       MYSQL_RANDOM_ROOT_PASSWORD: '1'
     volumes:
-      - db:/var/lib/mysql
+      - type: bind
+        source: /opt/docker/mysql_data
+        target: /var/lib/mysql
 
   prometheus:
     image: prom/prometheus
@@ -35,10 +41,6 @@ services:
       - 9090:9090
     restart: unless-stopped
     volumes:
-      - ./prometheus:/etc/prometheus
-      - prom_data:/prometheus
-
-volumes:
-  wordpress:
-  db:
-  prom_data:
+      - type: bind
+        source: /opt/docker/prometheus_data
+        target: /etc/prometheus
