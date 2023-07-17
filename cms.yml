@@ -9,5 +9,5 @@
 - name: Containers deploy
   hosts: all
   roles:
-    - role: vault_install
+    - role: cms_install
       tags: deploy
