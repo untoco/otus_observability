@@ -5,7 +5,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0750
+    mode: 0755
 
 - name: Create MySQL data directory
   become: true
@@ -16,23 +16,32 @@
     group: root
     mode: 0750
 
+- name: Create Prometheus config directory
+  become: true
+  ansible.builtin.file:
+    path: /opt/docker/prometheus_config
+    state: directory
+    owner: root
+    group: nogroup
+    mode: 0750
+
 - name: Create Prometheus data directory
   become: true
   ansible.builtin.file:
     path: /opt/docker/prometheus_data
     state: directory
     owner: root
-    group: root
-    mode: 0750
+    group: nogroup
+    mode: 0770
 
 - name: Put Prometheus config to volume
   become: true
   ansible.builtin.copy:
     src: ./files/prometheus.yml
-    dest: /opt/docker/prometheus_data/prometheus.yml
+    dest: /opt/docker/prometheus_config/prometheus.yml
     owner: root
-    group: root
-    mode: 0600
+    group: nogroup
+    mode: 0640
 
 - name: Put docker-compose to volume
   become: true
