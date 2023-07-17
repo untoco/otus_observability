@@ -1,0 +1,13 @@
+---
+- name: Server init
+  hosts: all
+  become: true
+  roles:
+    - role: docker_install
+      tags: init
+
+- name: Containers deploy
+  hosts: all
+  roles:
+    - role: vault_install
+      tags: deploy
