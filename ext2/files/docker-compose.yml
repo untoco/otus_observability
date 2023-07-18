@@ -47,3 +47,16 @@ services:
       - type: bind
         source: /opt/docker/prometheus_data
         target: /prometheus
+
+  blackbox:
+    image: prom/blackbox-exporter
+    container_name: blackbox_exporter
+    command:
+      - '--config.file=/config/blackbox.yml'
+    ports:
+      - 9115:9115
+    restart: unless-stopped
+    volumes: 
+      - type: bind
+        source: /opt/docker/exporters/blackbox
+        target: /config

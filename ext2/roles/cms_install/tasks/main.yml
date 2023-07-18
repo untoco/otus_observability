@@ -34,11 +34,30 @@
     group: nogroup
     mode: 0770
 
+- name: Create exporters tree structure
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /opt/docker/exporters
+    - /opt/docker/exporters/blackbox
+    - /opt/docker/exporters/mysql
+
 - name: Put Prometheus config to volume
   become: true
   ansible.builtin.copy:
     src: ./files/prometheus.yml
     dest: /opt/docker/prometheus_config/prometheus.yml
+    owner: root
+    group: nogroup
+    mode: 0640
+
+- name: Put Blackbox config to volume
+  become: true
+  ansible.builtin.copy:
+    src: ./files/blackbox.yml
+    dest: /opt/docker/exporters/blackbox/blackbox.yml
     owner: root
     group: nogroup
     mode: 0640
