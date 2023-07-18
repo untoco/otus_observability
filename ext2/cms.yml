@@ -8,6 +8,7 @@
 
 - name: Containers deploy
   hosts: all
+  become: true
   roles:
     - role: cms_install
       tags: deploy

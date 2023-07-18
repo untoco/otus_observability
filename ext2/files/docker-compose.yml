@@ -21,7 +21,6 @@ services:
   db:
     image: mysql:5.7
     container_name: mysql
-#    command: mysql -u root -p PwmkQ2cG -e 'use mysql; grant all privileges on *.* to 'root'@'%' identified by 'PwmkQ2cG'; flush privileges;'
     restart: always
     ports:
       - 3306:3306

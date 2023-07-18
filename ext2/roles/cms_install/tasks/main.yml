@@ -1,5 +1,4 @@
 - name: Create Wordpress data directory
-  become: true
   ansible.builtin.file:
     path: /opt/docker/wp_data
     state: directory
@@ -8,7 +7,6 @@
     mode: 0755
 
 - name: Create MySQL data directory
-  become: true
   ansible.builtin.file:
     path: /opt/docker/mysql_data
     state: directory
@@ -17,7 +15,6 @@
     mode: 0750
 
 - name: Create Prometheus config directory
-  become: true
   ansible.builtin.file:
     path: /opt/docker/prometheus_config
     state: directory
@@ -26,7 +23,6 @@
     mode: 0750
 
 - name: Create Prometheus data directory
-  become: true
   ansible.builtin.file:
     path: /opt/docker/prometheus_data
     state: directory
@@ -35,7 +31,6 @@
     mode: 0770
 
 - name: Create Grafana data directory
-  become: true
   ansible.builtin.file:
     path: /opt/docker/grafana_data
     state: directory
@@ -44,7 +39,6 @@
     mode: 0770
 
 - name: Create exporters tree structure
-  become: true
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -54,7 +48,6 @@
     - /opt/docker/exporters/mysqld
 
 - name: Put Prometheus config to volume
-  become: true
   ansible.builtin.copy:
     src: ./files/prometheus.yml
     dest: /opt/docker/prometheus_config/prometheus.yml
@@ -63,7 +56,6 @@
     mode: 0640
 
 - name: Put blackbox-exporter config to volume
-  become: true
   ansible.builtin.copy:
     src: ./files/blackbox.yml
     dest: /opt/docker/exporters/blackbox/blackbox.yml
@@ -72,7 +64,6 @@
     mode: 0640
 
 - name: Put mysql-exporter config to volume
-  become: true
   ansible.builtin.copy:
     src: ./files/mysql.cnf
     dest: /opt/docker/exporters/mysqld/mysql.cnf
@@ -81,7 +72,6 @@
     mode: 0640
 
 - name: Put docker-compose to volume
-  become: true
   ansible.builtin.copy:
     src: ./files/docker-compose.yml
     dest: /opt/docker/docker-compose.yml
@@ -90,7 +80,6 @@
     mode: 0600
 
 - name: Deploy Docker Compose stack
-  become: true
   community.docker.docker_compose:
     project_src: /opt/docker
     files:

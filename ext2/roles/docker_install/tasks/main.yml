@@ -4,16 +4,29 @@
       - docker.io
       - docker-compose
       - python3-mysqldb
-    state: "present"
+    state: present
     update_cache: true
+
+- name: Deploy config for enabling metrics
+  ansible.builtin.copy:
+    src: ./files/daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0600
 
 - name: Add to docker group
   ansible.builtin.user:
     name: "{{ ansible_user }}"
-    group: "docker"
+    group: docker
 
 - name: Create docker dir
   ansible.builtin.file:
     path: /opt/docker
     state: directory
-    mode: '0755'
+    mode: 0755
+
+- name: Restart docker service
+  ansible.builtin.service:
+    name: docker
+    state: restarted
