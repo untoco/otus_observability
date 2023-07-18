@@ -51,7 +51,7 @@
   loop:
     - /opt/docker/exporters
     - /opt/docker/exporters/blackbox
-    - /opt/docker/exporters/mysql
+    - /opt/docker/exporters/mysqld
 
 - name: Put Prometheus config to volume
   become: true
@@ -62,11 +62,20 @@
     group: nogroup
     mode: 0640
 
-- name: Put Blackbox config to volume
+- name: Put blackbox-exporter config to volume
   become: true
   ansible.builtin.copy:
     src: ./files/blackbox.yml
     dest: /opt/docker/exporters/blackbox/blackbox.yml
+    owner: root
+    group: nogroup
+    mode: 0640
+
+- name: Put mysql-exporter config to volume
+  become: true
+  ansible.builtin.copy:
+    src: ./files/mysql.cnf
+    dest: /opt/docker/exporters/mysqld/mysql.cnf
     owner: root
     group: nogroup
     mode: 0640
@@ -86,3 +95,7 @@
     project_src: /opt/docker
     files:
       - docker-compose.yml
+
+- name: Pause for 10 seconds to running all containers
+  ansible.builtin.pause:
+    seconds: 10

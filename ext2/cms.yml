@@ -11,3 +11,9 @@
   roles:
     - role: cms_install
       tags: deploy
+
+- name: Containers configuration
+  hosts: all
+  roles:
+    - role: cms_config
+      tags: config

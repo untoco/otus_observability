@@ -21,12 +21,15 @@ services:
   db:
     image: mysql:5.7
     container_name: mysql
+#    command: mysql -u root -p PwmkQ2cG -e 'use mysql; grant all privileges on *.* to 'root'@'%' identified by 'PwmkQ2cG'; flush privileges;'
     restart: always
+    ports:
+      - 3306:3306
     environment:
       MYSQL_DATABASE: wordpressdb
       MYSQL_USER: cmsuser
       MYSQL_PASSWORD: xZzK2jok
-      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+      MYSQL_ROOT_PASSWORD: PwmkQ2cG
     volumes:
       - type: bind
         source: /opt/docker/mysql_data
@@ -73,4 +76,17 @@ services:
     volumes: 
       - type: bind
         source: /opt/docker/exporters/blackbox
+        target: /config
+
+  mysqld-exporter:
+    image: prom/mysqld-exporter
+    container_name: mysqld_exporter
+    command:
+      - '--config.my-cnf=/config/mysql.cnf'
+    ports:
+      - 9104:9104
+    restart: unless-stopped
+    volumes: 
+      - type: bind
+        source: /opt/docker/exporters/mysqld
         target: /config

@@ -3,6 +3,7 @@
     name:
       - docker.io
       - docker-compose
+      - python3-mysqldb
     state: "present"
     update_cache: true
 

@@ -1,0 +1,12 @@
+- name: Create user for mysql exporter
+  community.mysql.mysql_user:
+    state: present
+    name: exporter
+    host: '%'
+    password: ZHkkQ9wm
+    priv:
+      '*.*': 'PROCESS, REPLICATION CLIENT, SELECT'
+    login_user: root
+    login_password: PwmkQ2cG
+    login_host: 192.168.50.11
+    login_port: 3306
