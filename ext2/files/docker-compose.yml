@@ -8,15 +8,15 @@ services:
     restart: always
     ports:
       - 8080:80
+    volumes:
+      - type: bind
+        source: /opt/docker/wp_data
+        target: /var/www/html
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: cmsuser
       WORDPRESS_DB_PASSWORD: xZzK2jok
       WORDPRESS_DB_NAME: wordpressdb
-    volumes:
-      - type: bind
-        source: /opt/docker/wp_data
-        target: /var/www/html
 
   db:
     image: mysql:5.7
@@ -24,24 +24,22 @@ services:
     restart: always
     ports:
       - 3306:3306
+    volumes:
+      - type: bind
+        source: /opt/docker/mysql_data
+        target: /var/lib/mysql
     environment:
       MYSQL_DATABASE: wordpressdb
       MYSQL_USER: cmsuser
       MYSQL_PASSWORD: xZzK2jok
       MYSQL_ROOT_PASSWORD: PwmkQ2cG
-    volumes:
-      - type: bind
-        source: /opt/docker/mysql_data
-        target: /var/lib/mysql
 
   prometheus:
     image: prom/prometheus
     container_name: prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+    restart: unless-stopped
     ports:
       - 9090:9090
-    restart: unless-stopped
     volumes:
       - type: bind
         source: /opt/docker/prometheus_config
@@ -49,29 +47,47 @@ services:
       - type: bind
         source: /opt/docker/prometheus_data
         target: /prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    restart: unless-stopped
+    ports:
+      - 9093:9093
+    volumes:
+      - type: bind
+        source: /opt/docker/alertmanager_config
+        target: /etc/alertmanager
+      - type: bind
+        source: /opt/docker/alertmanager_data
+        target: /alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
 
   grafana:
     image: grafana/grafana
     container_name: grafana
+    restart: unless-stopped
     ports:
       - 3000:3000
-    restart: unless-stopped
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=grafana
     volumes:
       - type: bind
         source: /opt/docker/grafana_data
         target: /etc/grafana/provisioning/datasources
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: grafana
 
   blackbox:
     image: prom/blackbox-exporter
     container_name: blackbox_exporter
+    restart: unless-stopped
     command:
       - '--config.file=/config/blackbox.yml'
     ports:
       - 9115:9115
-    restart: unless-stopped
     volumes: 
       - type: bind
         source: /opt/docker/exporters/blackbox
@@ -80,12 +96,12 @@ services:
   mysqld-exporter:
     image: prom/mysqld-exporter
     container_name: mysqld_exporter
-    command:
-      - '--config.my-cnf=/config/mysql.cnf'
+    restart: unless-stopped
     ports:
       - 9104:9104
-    restart: unless-stopped
     volumes: 
       - type: bind
         source: /opt/docker/exporters/mysqld
         target: /config
+    command:
+      - '--config.my-cnf=/config/mysql.cnf'
