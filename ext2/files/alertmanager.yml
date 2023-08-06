@@ -2,25 +2,29 @@ global:
   resolve_timeout: 5m
 
 route:
+  receiver: 'telegram-warn'
+  group_by: ['alertname', 'severity']
+  repeat_interval: 1h
+  routes:
   - receiver: 'telegram-warn'
-    group_by: ['alertname', 'severity']
-    repeat_interval: 1h
     matchers:
-    - severity: warning
+    - severity="warning"
   - receiver: 'telegram-crit'
-    group_by: ['alertname', 'severity']
-    repeat_interval: 1h
     matchers:
-    - severity: critical
+    - severity="critical"
 
 receivers:
   - name: 'telegram-warn'
     telegram_configs:
-      - chat_id: 819593262
+      - chat_id: -819593262
+        send_resolved: true
         parse_mode: 'Markdown'
         bot_token: '6428947480:AAGZUe2gtI9oVbjOo4DIdiuQ3slSgRI52_Y'
+        api_url: https://api.telegram.org
   - name: 'telegram-crit'
     telegram_configs:
-      - chat_id: 914189840
+      - chat_id: -914189840
+        send_resolved: true
         parse_mode: 'Markdown'
         bot_token: '6428947480:AAGZUe2gtI9oVbjOo4DIdiuQ3slSgRI52_Y'
+        api_url: https://api.telegram.org
