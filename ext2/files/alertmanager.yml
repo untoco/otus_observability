@@ -1,0 +1,26 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  - receiver: 'telegram-warn'
+    group_by: ['alertname', 'severity']
+    repeat_interval: 1h
+    matchers:
+    - severity: warning
+  - receiver: 'telegram-crit'
+    group_by: ['alertname', 'severity']
+    repeat_interval: 1h
+    matchers:
+    - severity: critical
+
+receivers:
+  - name: 'telegram-warn'
+    telegram_configs:
+      - chat_id: 819593262
+        parse_mode: 'Markdown'
+        bot_token: '6428947480:AAGZUe2gtI9oVbjOo4DIdiuQ3slSgRI52_Y'
+  - name: 'telegram-crit'
+    telegram_configs:
+      - chat_id: 914189840
+        parse_mode: 'Markdown'
+        bot_token: '6428947480:AAGZUe2gtI9oVbjOo4DIdiuQ3slSgRI52_Y'

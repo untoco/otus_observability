@@ -1,0 +1,21 @@
+groups:
+  - name: wp
+    rules:
+    - alert: WordPressNotReachable
+      expr: up{job="blackbox-http"} == 0
+      for: 5s
+      labels:
+        severity: warning
+      annotations:
+        summary: "WordPress app is not reachable"
+        description: "The WordPress app job '{{ $labels.job }}' has not been reachable for more than 5 seconds."
+  - name: db
+    rules:
+    - alert: MySQLNotReachable
+      expr: up{job="mysql"} == 0
+      for: 5s
+      labels:
+        severity: critical
+      annotations:
+        summary: "MySQL app is not reachable"
+        description: "The MySQL app job '{{ $labels.job }}' has not been reachable for more than 5 seconds."
