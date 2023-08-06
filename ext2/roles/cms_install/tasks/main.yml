@@ -1,42 +1,54 @@
-- name: Create Wordpress data directory
+- name: Create Wordpress directory
   ansible.builtin.file:
-    path: /opt/docker/wp_data
+    path: "{{ item }}"
     state: directory
     owner: root
     group: root
     mode: 0755
+  loop:
+    - /opt/docker/wp_data
 
-- name: Create MySQL data directory
+- name: Create MySQL directory
   ansible.builtin.file:
-    path: /opt/docker/mysql_data
+    path: "{{ item }}"
     state: directory
     owner: root
     group: root
     mode: 0750
+  loop:
+    - /opt/docker/mysql_data
 
-- name: Create Prometheus config directory
+- name: Create Prometheus directory
   ansible.builtin.file:
-    path: /opt/docker/prometheus_config
+    path: "{{ item }}"
     state: directory
     owner: root
-    group: nogroup
+    group: root
     mode: 0750
+  loop:
+    - /opt/docker/prometheus_config
+    - /opt/docker/prometheus_data
 
-- name: Create Prometheus data directory
+- name: Create Alertmanager directory
   ansible.builtin.file:
-    path: /opt/docker/prometheus_data
+    path: "{{ item }}"
     state: directory
     owner: root
-    group: nogroup
-    mode: 0770
+    group: root
+    mode: 0750
+  loop:
+    - /opt/docker/alertmanager_config
+    - /opt/docker/alertmanager_data
 
 - name: Create Grafana data directory
   ansible.builtin.file:
-    path: /opt/docker/grafana_data
+    path: "{{ item }}"
     state: directory
     owner: root
     group: nogroup
     mode: 0770
+  loop:
+    - /opt/docker/grafana_data
 
 - name: Create exporters tree structure
   ansible.builtin.file:
@@ -51,6 +63,22 @@
   ansible.builtin.copy:
     src: ./files/prometheus.yml
     dest: /opt/docker/prometheus_config/prometheus.yml
+    owner: root
+    group: nogroup
+    mode: 0640
+
+- name: Put Prometheus alerts config to volume
+  ansible.builtin.copy:
+    src: ./files/alert.rules.yml
+    dest: /opt/docker/prometheus_config/alert.rules.yml
+    owner: root
+    group: nogroup
+    mode: 0640
+
+- name: Put Alertmanager config to volume
+  ansible.builtin.copy:
+    src: ./files/alertmanager.yml
+    dest: /opt/docker/alertmanager_config/alertmanager.yml
     owner: root
     group: nogroup
     mode: 0640
@@ -85,6 +113,6 @@
     files:
       - docker-compose.yml
 
-- name: Pause for 10 seconds to running all containers
+- name: Pause for 15 seconds to running all containers
   ansible.builtin.pause:
-    seconds: 10
+    seconds: 15
